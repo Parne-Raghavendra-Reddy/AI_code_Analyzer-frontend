@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Code Analyzer - Dashboard</title>
+    <!-- Modern Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-body">
+
+    <!-- Wrapper for Sidebar and Main Content -->
+    <div class="dashboard-wrapper">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon small"><i class="fas fa-laptop-code"></i></div>
+                <h2>CodeAnalyzer</h2>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">MAIN MENU</div>
+                <button class="side-nav-btn active" data-target="editor-view"><i class="fas fa-code"></i> Editor & Results</button>
+                <button class="side-nav-btn" data-target="insights-view"><i class="fas fa-brain"></i> AI Insights</button>
+                <button class="side-nav-btn" data-target="history-view"><i class="fas fa-history"></i> My History</button>
+                <button class="side-nav-btn" data-target="tutorials-view"><i class="fas fa-play-circle"></i> Video Tutorials</button>
+                
+                <div id="admin-menu-section" class="hidden">
+                    <div class="nav-section">ADMINISTRATION</div>
+                    <button class="side-nav-btn admin-color" data-target="admin-view"><i class="fas fa-user-shield"></i> Dashboard</button>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar"><i class="fas fa-user"></i></div>
+                    <div class="user-details">
+                        <span id="display-username" class="username">User</span>
+                        <span id="display-role" class="role">Student</span>
+                    </div>
+                </div>
+                <button id="logout-btn" class="logout-btn" title="Logout"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Top Header containing Page Title and Global Actions -->
+            <header class="top-header">
+                <h1 id="page-title">Workspace Editor</h1>
+                <div class="header-actions">
+                    <button id="analyze-btn" class="btn primary-btn pulse-on-hover">
+                        <i class="fas fa-play"></i> <span class="btn-text">Run & Analyze</span>
+                        <div class="spinner hidden" id="loading-spinner"></div>
+                    </button>
+                    <button id="clear-btn" class="btn secondary-btn"><i class="fas fa-trash-alt"></i></button>
+                </div>
+            </header>
+
+            <!-- Views Container -->
+            <div class="views-container">
+                
+                <!-- 1. Editor & Results View -->
+                <div id="editor-view" class="dashboard-view active">
+                    <div class="split-layout">
+                        <!-- Left pane: Input -->
+                        <div class="code-panel pane-card shadow">
+                            <div class="pane-header">
+                                <h3><i class="fas fa-edit"></i> Source Code</h3>
+                                <select id="language-select" class="modern-select">
+                                    <option value="Java">Java</option>
+                                    <option value="C">C</option>
+                                    <option value="Python">Python</option>
+                                </select>
+                            </div>
+                            <textarea id="code-input" class="modern-textarea code-font" placeholder="// Write or paste your code here..."></textarea>
+                            
+                            <div class="stdin-panel">
+                                <label><i class="fas fa-keyboard"></i> Standard Input (Optional)</label>
+                                <textarea id="stdin-input" class="modern-textarea small-textarea code-font" placeholder="Inputs read by Scanner/input()..."></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Right pane: Output -->
+                        <div class="output-panel pane-card shadow">
+                            <div class="pane-header">
+                                <h3><i class="fas fa-terminal"></i> Terminal Output</h3>
+                                <div class="badge-status hidden" id="status-badge">Success</div>
+                            </div>
+                            
+                            <div id="initial-placeholder" class="empty-state">
+                                <i class="fas fa-rocket empty-icon"></i>
+                                <p>Click <strong>Run & Analyze</strong> to execute your code in the cloud.</p>
+                            </div>
+                            
+                            <div id="execution-results" class="hidden terminal-window">
+                                <pre id="output-box" class="terminal-text"></pre>
+                                <div id="error-container" class="hidden">
+                                    <hr class="terminal-divider">
+                                    <pre id="error-box" class="terminal-error"></pre>
+                                </div>
+                            </div>
+
+                            <!-- Metrics Quick View -->
+                            <div class="metrics-row hidden" id="metrics-quick-view">
+                                <div class="metric"><i class="fas fa-align-left"></i> Lines: <b id="m-lines">0</b></div>
+                                <div class="metric"><i class="fas fa-network-wired"></i> Complexity: <b id="m-complex">0</b></div>
+                                <div class="metric"><i class="fas fa-cube"></i> Methods: <b id="m-methods">0</b></div>
+                                <div class="metric"><i class="fas fa-subscript"></i> Vars: <b id="m-vars">0</b></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. AI Insights View -->
+                <div id="insights-view" class="dashboard-view hidden">
+                    <div class="split-layout">
+                        <div class="insight-column pane-card shadow">
+                            <div class="pane-header">
+                                <h3><i class="fas fa-chalkboard-teacher"></i> Code Breakdown</h3>
+                            </div>
+                            <div class="insight-content">
+                                <h4>Beginner Explanation</h4>
+                                <div class="explanation-box" id="beginner-text">Run analysis first.</div>
+                                
+                                <h4 style="margin-top:20px;">Execution Workflow Trace</h4>
+                                <div class="explanation-box" id="workflow-text">Run analysis first.</div>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-column pane-card shadow">
+                            <div class="pane-header">
+                                <h3><i class="fas fa-robot"></i> AI Code Assistant</h3>
+                            </div>
+                            <div class="chat-wrapper">
+                                <div id="chat-history" class="chat-messages">
+                                    <div class="msg ai"><div class="bubble">Hello! Ask me any questions about your code.</div></div>
+                                </div>
+                                <div class="chat-input-bar">
+                                    <input type="text" id="ai-chat-input" placeholder="e.g. Can you optimize this loop?">
+                                    <button id="ai-chat-send" class="btn primary-btn icon-only"><i class="fas fa-paper-plane"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. History View -->
+                <div id="history-view" class="dashboard-view hidden">
+                    <div class="pane-card shadow full-height">
+                        <div class="pane-header spread">
+                            <h3><i class="fas fa-history"></i> My Submissions</h3>
+                            <button id="refresh-history-btn" class="btn secondary-btn small-btn"><i class="fas fa-sync"></i></button>
+                        </div>
+                        <div class="table-container">
+                            <table class="modern-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Language</th>
+                                        <th>Lines</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history-table-body">
+                                    <tr><td colspan="5" class="empty-state-text">No history to display.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Tutorials View -->
+                <div id="tutorials-view" class="dashboard-view hidden">
+                    <div class="pane-card shadow full-height">
+                        <div class="pane-header">
+                            <h3><i class="fab fa-youtube"></i> Recommended Learning</h3>
+                        </div>
+                        <p class="section-desc">These tutorials were dynamically chosen based on the actual operations and syntax inside your code.</p>
+                        
+                        <div id="video-suggestions-container" class="cards-grid">
+                            <div class="empty-state">Analyze code to see tailored tutorial recommendations.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Admin Dashboard View -->
+                <div id="admin-view" class="dashboard-view hidden">
+                    
+                    <!-- Admin Analytics KPIs -->
+                    <div class="metrics-row shadow" style="background:white; border-radius:var(--radius-md); margin-bottom:20px; border:1px solid var(--border-color);">
+                        <div class="metric"><i class="fas fa-users"></i> Total Users: <b id="admin-stat-users">0</b></div>
+                        <div class="metric"><i class="fas fa-code-branch"></i> Total Submissions: <b id="admin-stat-subs">0</b></div>
+                        <div class="metric"><i class="fas fa-check-circle"></i> Success Rate: <b id="admin-stat-success">0%</b></div>
+                    </div>
+
+                    <div class="admin-grid">
+                        <div class="pane-card shadow admin-card">
+                            <div class="pane-header">
+                                <h3><i class="fas fa-users"></i> Platform Users</h3>
+                            </div>
+                            <div class="table-container">
+                                <table class="modern-table">
+                                    <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th></tr></thead>
+                                    <tbody id="admin-users-list"><tr><td colspan="4">Loading...</td></tr></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="pane-card shadow admin-card">
+                            <div class="pane-header">
+                                <h3><i class="fas fa-database"></i> Global Submissions</h3>
+                            </div>
+                            <div class="table-container">
+                                <table class="modern-table">
+                                    <thead><tr><th>ID</th><th>User</th><th>Lang</th><th>Date</th><th>Action</th></tr></thead>
+                                    <tbody id="admin-subs-list"><tr><td colspan="5">Loading...</td></tr></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Code Viewer Modal (Hidden) -->
+    <div id="code-modal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999; display:flex; align-items:center; justify-content:center;">
+        <div style="background:white; width:600px; max-width:90%; border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-lg);">
+            <div style="padding:16px 20px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; background:#f9fafb;">
+                <h3 style="margin:0; font-size:16px;" id="modal-title">Submission Details</h3>
+                <button id="close-modal-btn" style="background:none; border:none; cursor:pointer; font-size:16px; color:var(--text-muted);"><i class="fas fa-times"></i></button>
+            </div>
+            <div style="padding:20px;">
+                <textarea id="modal-code-area" class="code-font" style="width:100%; height:300px; padding:12px; background:#1e1e1e; color:#d4d4d4; border:none; border-radius:4px; resize:none;" readonly></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script src="analyzer.js"></script>
+</body>
+</html>
