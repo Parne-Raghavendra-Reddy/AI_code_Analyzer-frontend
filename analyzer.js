@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // === 2. SIDEBAR NAVIGATION LOGIC ===
-const API_BASE = 'http://localhost:8090/api';
+const API_BASE = 'https://ai-code-analyzer-backend.onrender.com/api';
 const navBtns = document.querySelectorAll('.side-nav-btn');
 const views = document.querySelectorAll('.dashboard-view');
 const pageTitle = document.getElementById('page-title');

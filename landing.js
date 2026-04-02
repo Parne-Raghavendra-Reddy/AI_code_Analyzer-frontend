@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const API_BASE = 'http://localhost:8090/api/auth';
+    const API_BASE = 'https://ai-code-analyzer-backend.onrender.com/api/auth';
 
     // UI Tab Switching for User Portal
     const authTabs = document.querySelectorAll('.auth-tab');

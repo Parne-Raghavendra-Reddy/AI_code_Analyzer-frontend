@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // === DOM ELEMENTS ===
-    const API_BASE = 'http://localhost:8090/api'; // Changed to 8090 as per application.properties
+    const API_BASE = 'https://ai-code-analyzer-backend.onrender.com/api';
 
     // Auth Elements
     const authOverlay = document.getElementById('auth-overlay');
